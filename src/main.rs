@@ -18,6 +18,10 @@ struct Cli {
     /// show the hashmap containing the number of occurrences of each character in the file
     #[arg(short, long)]
     show_occs: bool,
+
+    #[clap(short, long, value_parser)]
+    #[arg(default_value_t = 4096)]
+    chunk_size: usize,
 }
 
 fn main() {
@@ -34,14 +38,17 @@ fn main() {
 
     let file = File::open(cli.input_file).expect("could not open file");
     let map = unsafe { MmapOptions::new().map(&file).expect("could not mmap file") };
+    let chunks = map.chunks(cli.chunk_size).collect::<Vec<_>>();
 
-    let occs: Vec<usize> = map
+    let occs: Vec<usize> = chunks
         .par_iter()
         .fold(
             || vec![0; 256],
-            |mut a, &c| {
-                a[c as usize] += 1;
-                a
+            |a, &c| {
+                c.iter().fold(a, |mut a, &c| {
+                    a[c as usize] += 1;
+                    a
+                })
             },
         )
         .reduce(
