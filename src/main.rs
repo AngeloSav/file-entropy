@@ -1,7 +1,7 @@
 use clap::Parser;
 use memmap2::MmapOptions;
 use minimum_redundancy::Frequencies;
-use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+use rayon::iter::{ParallelBridge, ParallelIterator};
 use std::{collections::HashMap, fs::File};
 
 #[derive(Parser)]
@@ -38,13 +38,13 @@ fn main() {
 
     let file = File::open(cli.input_file).expect("could not open file");
     let map = unsafe { MmapOptions::new().map(&file).expect("could not mmap file") };
-    let chunks = map.chunks(cli.chunk_size).collect::<Vec<_>>();
 
-    let occs: Vec<usize> = chunks
-        .par_iter()
+    let occs: Vec<usize> = map
+        .chunks(cli.chunk_size)
+        .par_bridge()
         .fold(
             || vec![0; 256],
-            |a, &c| {
+            |a, c| {
                 c.iter().fold(a, |mut a, &c| {
                     a[c as usize] += 1;
                     a
