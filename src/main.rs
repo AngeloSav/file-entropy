@@ -19,6 +19,7 @@ struct Cli {
     #[arg(short, long)]
     show_occs: bool,
 
+    /// size of the chunks parsed by each thread
     #[clap(short, long, value_parser)]
     #[arg(default_value_t = 4096)]
     chunk_size: usize,
