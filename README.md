@@ -1,6 +1,8 @@
-This is a little program i wrote to quickly get the entropy of big files (>= 4GB)
+# file-entropy
 
-# Installation
+This is a little program i wrote to quickly get the entropy of big files (> 4GB)
+
+## Installation
 to build from source, just run:
 
 ```bash
@@ -14,7 +16,7 @@ or, if you just want the executable:
 cargo install --git https://github.com/AngeloSav/file-entropy.git file-entropy
 ```
 
-# Usage
+## Usage
 
 ```
 Returns entropy (in bits) of a file
@@ -25,13 +27,13 @@ Arguments:
   <INPUT_FILE>  file on which we find the entroy
 
 Options:
-  -n, --n-threads <N_THREADS>    number of threads to use
+  -n, --n-threads <N_THREADS>    number of threads to spawn
   -s, --show-occs                show the hashmap containing the number of occurrences of each character in the file
   -c, --chunk-size <CHUNK_SIZE>  size (in bytes) of the chunks parsed by each thread [default: 4096]
   -h, --help                     Print help
 ```
 
-## Example
+### Example
 
 ```bash
 ➜  ~ ls -lh dataset/big_english           
